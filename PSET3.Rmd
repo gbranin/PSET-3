@@ -1,0 +1,105 @@
+---
+title: "Discriminant Analysis PSET 3"
+author: "Lena Chan, Gaby Branin, Harry Hegeman, Lauren Salzman"
+date: "2/27/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+#USING YEAR AS OUR GROUPS
+#load packages
+library(MASS)
+library(DiscriMiner)
+library(klaR)
+
+#load data
+bball <- read.csv("/Users/lenachan/Desktop/S&DS 363/cbb.csv",header = T)
+head(bball)
+names(bball)
+dim(bball)
+str(bball)
+
+#we will use "YEAR" as our categorical variable. Since there are 5 different years--2015, 2016, 2017, 2018, and 2019--this will allow us to compare 5 different groups.
+table(bball$YEAR)
+
+#Make "YEAR" categorical
+bball$YEAR <- as.factor(bball$YEAR)
+levels(bball$YEAR) <- c("2015","2016","2017","2018","2019")
+
+#we will use "G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "X2P_O", "X2P_D", "X3P_O", "ADJ_T", and "WAB" as continuous predictors.
+
+#subset the data
+bball <- bball[, -c(1, 2, 22, 23)]
+
+#only select complete cases for code to work
+bball <- bball[complete.cases(bball),]
+
+#test assumption 1: multivariate normality
+
+source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
+par(mfrow = c(1,2), pty = "s", cex = 0.8)
+CSQPlot(bball[bball$YEAR == "2015", 1:19], label = "2015")
+CSQPlot(bball[bball$YEAR == "2016", 1:19], label = "2016")
+CSQPlot(bball[bball$YEAR == "2017", 1:19], label = "2017")
+CSQPlot(bball[bball$YEAR == "2018", 1:19], label = "2018")
+CSQPlot(bball[bball$YEAR == "2019", 1:19], label = "2019")
+
+
+#the five groups do not appear to follow a multivariate normal distribution.
+
+
+```
+```{r}
+#USING POSTSEASON AS OUR GROUPS
+#load packages
+library(MASS)
+library(DiscriMiner)
+library(klaR)
+
+#load data
+bball <- read.csv("/Users/lenachan/Desktop/S&DS 363/cbb.csv",header = T)
+head(bball)
+names(bball)
+dim(bball)
+str(bball)
+
+#we will use "POSTSEASON" as our categorical variable. Since there are 8 different rounds of eliination--"2ND","Champions","E8","F4","R32","R64","R68","S16"--this will allow us to compare 8 different groups.
+table(bball$POSTSEASON)
+
+#"POSTSEASON" is already a categorical variable
+
+#we will use "G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "X2P_O", "X2P_D", "X3P_O", "ADJ_T", and "WAB" as continuous predictors.
+
+#subset the data
+bball <- bball[, -c(1, 2, 23, 24)]
+
+#only select complete cases for code to work
+bball <- bball[complete.cases(bball),]
+
+#test assumption 1: multivariate normality
+source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
+par(mfrow = c(1,2), pty = "s", cex = 0.8)
+CSQPlot(bball[bball$POSTSEASON == "2ND", 1:19], label = "2ND")
+CSQPlot(bball[bball$POSTSEASON == "Champions", 1:19], label = "Champions")
+CSQPlot(bball[bball$POSTSEASON == "E8", 1:19], label = "E8")
+CSQPlot(bball[bball$POSTSEASON == "F4", 1:19], label = "F4")
+CSQPlot(bball[bball$POSTSEASON == "R32", 1:19], label = "R32")
+CSQPlot(bball[bball$POSTSEASON == "R64", 1:19], label = "R64")
+CSQPlot(bball[bball$POSTSEASON == "R68", 1:19], label = "R68")
+CSQPlot(bball[bball$POSTSEASON == "S16", 1:19], label = "S16")
+
+#not sure why the code isn't working here
+
+
+```
+
+
+

@@ -1,0 +1,159 @@
+---
+title: "S&DS 363 - Discriminant Analysis"
+author: "Gaby Branin, Lena Chan, Harry Hegeman, Lauren Salzman"
+date: "2/20/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+```{r}
+#read in data
+bball <- as.data.frame(read.csv("/Users/gabriellebranin/Desktop/Classes/Spring 2020/S&DS 363/college-basketball-dataset/cbb.csv", header = TRUE))
+
+head(bball)
+names(bball)
+dim(bball)
+str(bball)
+
+#only select complete cases for code to work
+bball <- bball[complete.cases(bball),]
+
+#attach bball in order to avoid use of $
+attach(bball)
+
+#load proper packages
+library(MASS)
+library(car)
+
+install.packages('biotools')
+library(biotools)
+
+install.packages("DiscriMiner")
+library(DiscriMiner)
+
+install.packages("klaR")
+library(klaR)
+
+```
+
+*Question 1*
+
+* Evaluate the assumptions implicit to discriminant analysis
+  + multivariate normality within each group (chi-squared quantile plots)
+  + similarity of covarainces matrices (Box's M or raw standard deviations/covariance matrices)
+  
+* Comment on what you find (whether or not transformations may help)
+
+* Might want to make a matrix plot (or pairs plot) to get a sense of what data looks like 2 variables at a time (use different symbols for each group)
+
+```{r}
+#create subset of function of columns we are focusing on
+bball <- bball[,c("CONF", "BARTHAG", "WAB", "ADJOE")]
+
+#download function
+source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
+
+
+levelsCONF <- levels(CONF)
+
+#look for multivariate normality
+#par(mfrow = c(3,11))
+#for (i in 1:length(levelsCONF)){
+#  CSQPlot(bball[bball$CONF == levelsCONF[i], 2:7], label = paste(levelsCONF[i]))
+#}
+
+#only the following conferences worked. Other conferences did not contain enough data.
+CSQPlot(bball[bball$CONF == "ACC", 2:4], label = "ACC")
+CSQPlot(bball[bball$CONF == "A10", 2:4], label = "A10")
+CSQPlot(bball[bball$CONF == "B10", 2:4], label = "B10")
+CSQPlot(bball[bball$CONF == "B12", 2:4], label = "B12")
+CSQPlot(bball[bball$CONF == "BE", 2:4], label = "BE")
+#CSQPlot(bball[bball$CONF == "MVC", 2:4], label = "MVC")    #not normal
+CSQPlot(bball[bball$CONF == "MWC", 2:4], label = "MWC")    
+CSQPlot(bball[bball$CONF == "P12", 2:4], label = "P12") 
+CSQPlot(bball[bball$CONF == "SEC", 2:4], label = "SEC")   
+#CSQPlot(bball[bball$CONF == "WCC", 2:4], label = "WCC")    #not normal
+
+
+#keep an upper tier, mid tier, and lower tier - A10, P12, ACC
+bball <- bball[bball$CONF %in% "A10" | 
+                 bball$CONF %in% "ACC" | 
+                 bball$CONF %in% "P12", ]
+head(bball)
+
+#Scatter plot
+plot(bball[,2:4], col = c(2:4), pch = bball[,2]+15, cex = 1.2)
+    #look at covariance 'footprints' --> want them to appear the same for all pairs
+
+#Box's M
+boxM(bball[,c("BARTHAG", "WAB", "ADJOE")], bball$CONF)
+    #we want a large p-vale so that we can fail to reject the null hypothesis that the covariance matrices are the same
+```
+
+We decided to use BARTHAG (power ranking), WAB (wins above bubble), and ADJOE (adjusted offensive efficiency) to predict a team's conference. We are predicting a team to be in one of three conferences, the A10, ACC, or A12.
+
+All CSQ plots appear roughly linear, meaning that all pairs of variables follow an approximately bivariate normal distrubution. 
+
+
+*Question 2*
+
+* Perform Discriminant Analysis
+  + Comment on which model seems the best
+  
+```{r}
+
+```
+  
+*Question 3*
+
+* Comment on whether there is statistical evidence that the multivariate group means are different (Multivariate Wilks Lambda Test)
+
+```{r}
+
+```
+
+*Question 4*
+
+* How mnay discriminant function are significant?
+* What is the relative discriminating power of each function?
+
+```{r}
+
+```
+
+*Question 5*
+
+* Use classification, both regular and leave-one-out (or cross validation) to evaluate the discriminating ability of your functions
+
+```{r}
+
+```
+
+*Question 6*
+
+* Provide some evidence as to which of your original variables are the 'best' discriminators amongst your groups
+
+```{r}
+
+```
+
+*Question 7*
+
+* Make score plots for the first 2 or 3 DA function scores
+  + use different symbols/colors for each group
+* Comment on what you see
+
+```{r}
+
+```
+
+*Question 8* **Bonus**
+
+* try kernal smoothing or k-nearest neighbors
+
+```{r}
+
+```
+
